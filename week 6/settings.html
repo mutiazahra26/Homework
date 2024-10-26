@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learns</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Reset default styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        /* Header styling */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #4285f4;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        /* Menu toggle button */
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1100; /* Ensure the button is above the content */
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            padding-top: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+
+        /* Sidebar active state */
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        /* Sidebar list styling */
+        .sidebar ul {
+            list-style-type: none;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #444;
+        }
+
+        /* Profile dialog styling */
+        .profile-dialog {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 70px;
+            width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+
+        .profile-dialog.active {
+            display: block;
+        }
+
+        .profile-dialog .profile-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-dialog img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .profile-dialog p {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .profile-dialog button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            background-color: #4285f4;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Main content area */
+        .content {
+            flex-grow: 1;
+            margin-top: 80px; /* Adjust for header height */
+            padding: 20px;
+        }
+
+        /* Settings section styling */
+        .settings-section {
+            margin-bottom: 40px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .settings-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .settings-section label {
+            font-weight: 500;
+        }
+
+        /* Save button styling */
+        .save-button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background-color: #357ae8;
+        }
+
+        /* Logout button styling */
+        button.logout {
+            background-color: #f44336;
+        }
+
+        /* Media query for responsiveness */
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header text-2xl py-10 pl-6">
+        <div class="flex items-center">
+            <button class="menu-toggle" id="menu-toggle">☰</button>
+            <h1 class="px-3">Learns</h1>
+        </div>
+
+        <div class="flex items-center p-2 bg-sky-100 rounded-full text-base" id="profile">
+            <img src="https://tse2.mm.bing.net/th?id=OIP.kFgo2lT4VSY00B0235r09wHaHa&pid=Api&P=0&h=180" width="30" height="30" class="rounded-full" alt="profil">
+            <p class="text-slate-600 pl-2">Langit Gumilang</p>
+            <i class="fa fa-chevron-down text-slate-600 pr-2 pl-6"></i>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar pt-5 pl-3" id="sidebar">
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="classes.html">Classes</a></li>
+            <li><a href="assignment.html">Assignments</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- Settings Section -->
+                <section class="settings-section">
+                    <h2>Akun</h2>
+                    <div class="form-group">
+                        <label for="account-email" class="block text-gray-700">Email</label>
+                        <input type="email" class="form-control" id="account-email" value="langitgumilang@gmail.com" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="display-name" class="block text-gray-700">Nama Tampilan</label>
+                        <input type="text" class="form-control" id="display-name" value="Langit Gumilang">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="block text-gray-700">Kata Sandi</label>
+                        <input type="password" class="form-control" id="password" value="password123">
+                    </div>
+
+                    <button class="save-button mt-4">Simpan Perubahan</button>
+                </section>
+
+                <!-- Notifikasi Section -->
+                <section class="settings-section">
+                    <h2>Notifikasi</h2>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="email-notifications" checked>
+                        <label class="form-check-label" for="email-notifications">Notifikasi Email</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="push-notifications">
+                        <label class="form-check-label" for="push-notifications">Notifikasi Push</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="sms-notifications">
+                        <label class="form-check-label" for="sms-notifications">Notifikasi SMS</label>
+                    </div>
+
+                    <button class="save-button mt-4">Simpan Perubahan</button>
+                </section>
+
+                <!-- Preferensi Section -->
+                <section class="settings-section">
+                    <h2>Preferensi</h2>
+                    <div class="form-group">
+                        <label for="language" class="block text-gray-700">Bahasa</label>
+                        <select id="language" class="form-control">
+                            <option value="id" selected>Bahasa Indonesia</option>
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="theme" class="block text-gray-700">Tema</label>
+                        <select id="theme" class="form-control">
+                            <option value="light" selected>Light</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </div>
+
+                    <button class="save-button mt-4">Simpan Perubahan</button>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Profile Dialog -->
+    <div class="profile-dialog items-center justify-center bg-sky-100" id="profile-dialog">
+        <div class="profile-content">
+            <div class="justify-center">
+                <img src="https://via.placeholder.com/20" alt="profile" class="mx-auto">
+            </div>
+            <p><strong>Langit Gumilang</strong></p>
+            <p>langitgumilang@gmail.com</p>
+            <button onclick="window.location.href = 'profile.html'">To Profile</button>
+            <button class="logout">Log Out</button>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle functionality
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Profile dropdown functionality
+        const profile = document.getElementById('profile');
+        const profileDialog = document.getElementById('profile-dialog');
+
+        profile.addEventListener('click', () => {
+            profileDialog.classList.toggle('active');
+        });
+
+        // Close the profile dialog if clicked outside
+        document.addEventListener('click', function(event) {
+            if (!profile.contains(event.target) && !profileDialog.contains(event.target)) {
+                profileDialog.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

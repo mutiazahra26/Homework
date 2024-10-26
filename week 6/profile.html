@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learns</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Reset margins and paddings for all elements */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8fafc; /* Light gray background for the body */
+        }
+
+        /* Header styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #4285f4; /* Google blue color */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 60px; /* Below header */
+            left: 0;
+            width: 250px;
+            height: calc(100% - 60px); /* Full height minus header */
+            background-color: #333;
+            padding-top: 20px;
+            transform: translateX(-100%); /* Hidden by default */
+            transition: transform 0.3s ease; /* Smooth transition */
+            z-index: 999;
+        }
+
+        /* Sidebar active class to show it */
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        /* Sidebar link styles */
+        .sidebar ul {
+            list-style-type: none;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Sidebar link hover effect */
+        .sidebar ul li a:hover {
+            background-color: #444;
+        }
+
+        /* Content area styles */
+        .content {
+            flex-grow: 1;
+            margin-top: 80px; /* Space for header */
+            padding: 20px;
+        }
+
+        /* Profile dialog styles */
+        .profile-dialog {
+            display: none; /* Hidden by default */
+            position: absolute;
+            right: 20px;
+            top: 70px;
+            width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+
+        /* Profile dialog active class to show it */
+        .profile-dialog.active {
+            display: block;
+        }
+
+        /* Profile dialog content styles */
+        .profile-dialog .profile-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-dialog img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%; /* Circular profile image */
+        }
+
+        .profile-dialog p {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .profile-dialog button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            background-color: #4285f4; /* Google blue */
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Logout button style */
+        button.logout {
+            background-color: #f44336; /* Red for logout */
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0; /* No margin for smaller screens */
+            }
+
+            .sidebar {
+                transform: translateX(-100%); /* Hidden by default */
+            }
+
+            .sidebar.active {
+                transform: translateX(0); /* Show on active */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header text-2xl py-10 pl-6">
+        <div class="flex items-center">
+            <button class="menu-toggle" id="menu-toggle">☰</button> <!-- Menu toggle button -->
+            <h1 class="px-3">Learns</h1> <!-- Page title -->
+        </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar pt-5 pl-3" id="sidebar">
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="classes.html">Classes</a></li>
+            <li><a href="assignment.html">Assignments</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container-fluid content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Profile</h1> <!-- Profile section title -->
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Profile Picture and Completion Status -->
+                    <div class="space-y-4">
+                        <div class="flex justify-center">
+                            <img class="w-24 h-24 rounded-full" src="https://via.placeholder.com/150" alt="profile"> <!-- Placeholder profile image -->
+                        </div>
+                        <div class="text-center">
+                            <button class="text-blue-600 font-medium">Upload new photo</button>
+                            <p class="text-sm text-gray-500">At least 800x800 px recommended. JPG or PNG is allowed.</p>
+                        </div>
+
+                        <div class="bg-gray-100 p-4 rounded-lg shadow">
+                            <h3 class="text-lg font-bold mb-2">Complete your profile</h3>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <span class="text-sm font-medium">60%</span>
+                                </div>
+                                <div class="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
+                                    <div style="width: 60%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
+                                </div>
+                            </div>
+                            <ul class="text-sm text-gray-600 mt-3 space-y-1">
+                                <li>✔ Upload your photo - 10%</li>
+                                <li>✔ Personal info - 30%</li>
+                                <li>✔ Education Info - 20%</li>
+                                <li>✔ Interests - 0%</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info Section -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-50 p-4 rounded-lg shadow space-y-6 mb-3">
+                            <div>
+                                <h3 class="font-semibold text-lg">Personal Info</h3>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Full Name</p>
+                                        <p class="text-sm text-gray-500">Langit Gumilang</p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Email</p>
+                                        <p class="text-sm text-gray-500">langitgumilang@google.com</p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Phone</p>
+                                        <p class="text-sm text-gray-500">+62 8xx xxxx xxxx</p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Education Info Section -->
+                        <div class="bg-gray-50 p-4 rounded-lg shadow space-y-6 mb-3">
+                            <div>
+                                <h3 class="font-semibold text-lg">Education Info</h3>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Degree</p>
+                                        <p class="text-sm text-gray-500"></p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Institution</p>
+                                        <p class="text-sm text-gray-500">Forest Grove University</p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Major</p>
+                                        <p class="text-sm text-gray-500">Information System</p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Awards</p>
+                                        <p class="text-sm text-gray-500"></p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interests Section -->
+                        <div class="bg-gray-50 p-4 rounded-lg shadow space-y-6 mb-3">
+                            <div>
+                                <h3 class="font-semibold text-lg">Interests</h3>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Hobbies and Interests</p>
+                                        <p class="text-sm text-gray-500"></p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                                <div class="flex justify-between items-center mt-3">
+                                    <div>
+                                        <p class="text-gray-700">Volunteer Work</p>
+                                        <p class="text-sm text-gray-500"></p>
+                                    </div>
+                                    <button class="text-blue-600">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toggle Sidebar Script -->
+    <script>
+        // Select menu toggle button and sidebar
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        // Event listener to toggle sidebar visibility
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

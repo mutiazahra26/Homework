@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title>Classes - Learns</title>
+    
+    <!-- Custom Styles -->
+    <style>
+        /* General resets and box sizing */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #4285f4;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1100; /* Ensure toggle button is above content */
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            padding-top: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #444;
+        }
+
+        /* Profile dialog styles */
+        .profile-dialog {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 70px;
+            width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+
+        .profile-dialog.active {
+            display: block;
+        }
+
+        .profile-dialog .profile-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-dialog img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .profile-dialog p {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .profile-dialog button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            background-color: #4285f4;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .profile-dialog button.logout {
+            background-color: #f44336;
+        }
+
+        /* Main content and card styles */
+        .content {
+            flex-grow: 1;
+            margin-top: 80px; /* Adjusting for fixed header height */
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card img {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-view {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-view:hover {
+            background-color: #357ae8;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header text-2xl py-10 pl-6">
+        <div class="flex items-center">
+            <button class="menu-toggle" id="menu-toggle">☰</button>
+            <h1 class="px-3">Learns</h1>
+        </div>
+
+        <div class="flex items-center p-2 bg-sky-100 rounded-full text-base" id="profile">
+            <img src="https://tse2.mm.bing.net/th?id=OIP.kFgo2lT4VSY00B0235r09wHaHa&pid=Api&P=0&h=180" width="30" height="30" class="rounded-full" alt="profile">
+            <p class="text-slate-600 pl-2">Langit Gumilang</p>
+            <i class="fa fa-chevron-down text-slate-600 pr-2 pl-6"></i>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar pt-5 pl-3" id="sidebar">
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="classes.html">Classes</a></li>
+            <li><a href="assignment.html">Assignments</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Classes</h1>
+                </div>
+
+                <!-- Class Cards -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="Algorithms and Programming">
+                            <div class="card-body">
+                                <h5 class="card-title">Algorithms and Programming</h5>
+                                <p class="card-text pb-3">Learn how to think computationally and build programs that can solve problems.</p>
+                                <button class="btn-view">View</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="Data Structure">
+                            <div class="card-body">
+                                <h5 class="card-title">Data Structure</h5>
+                                <p class="card-text pb-3">Learn how to choose the right data structure to make your program more efficient.</p>
+                                <button class="btn-view">View</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="Human and Computer Interaction">
+                            <div class="card-body">
+                                <h5 class="card-title">Human and Computer Interaction</h5>
+                                <p class="card-text pb-3">Learn how to design computer systems that are easy for humans to use.</p>
+                                <button class="btn-view">View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Profile Dialog -->
+    <div class="profile-dialog" id="profile-dialog">
+        <div class="profile-content">
+            <img src="https://via.placeholder.com/80" alt="profile" class="mx-auto">
+            <p><strong>Langit Gumilang</strong></p>
+            <p>langitgumilang@gmail.com</p>
+            <button onclick="window.location.href = 'profile.html'">To Profile</button>
+            <button class="logout">Log Out</button>
+        </div>
+    </div>
+
+    <!-- Toggle Sidebar and Profile Dialog Script -->
+    <script>
+        // Sidebar toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Profile dialog toggle
+        const profile = document.getElementById('profile');
+        const profileDialog = document.getElementById('profile-dialog');
+
+        profile.addEventListener('click', () => {
+            profileDialog.classList.toggle('active');
+        });
+
+        // Close profile dialog when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!profile.contains(event.target) && !profileDialog.contains(event.target)) {
+                profileDialog.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

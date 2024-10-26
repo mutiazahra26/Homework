@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learns</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Load Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #4285f4;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        /* Sidebar styles */
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1100; /* Ensure toggle is above content */
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 250px;
+            height: calc(100% - 60px); /* Full height minus header */
+            background-color: #333;
+            padding-top: 20px;
+            transform: translateX(-100%); /* Initially hidden */
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+
+        .sidebar.active {
+            transform: translateX(0); /* Show sidebar when active */
+        }
+
+        /* Sidebar links */
+        .sidebar ul {
+            list-style-type: none;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #444;
+        }
+
+        /* Content area */
+        .content {
+            flex-grow: 1;
+            margin-top: 80px; /* Space for header */
+            padding: 20px;
+        }
+
+        /* Profile dialog styles */
+        .profile-dialog {
+            display: none; /* Initially hidden */
+            position: absolute;
+            right: 20px;
+            top: 70px;
+            width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+
+        .profile-dialog.active {
+            display: block; /* Show dialog when active */
+        }
+
+        /* Profile dialog content styles */
+        .profile-dialog .profile-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-dialog img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .profile-dialog p {
+            margin: 10px 0 5px; /* Space between paragraphs */
+        }
+
+        .profile-dialog button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            background-color: #4285f4;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.logout {
+            background-color: #f44336; /* Logout button color */
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="flex items-center">
+            <button class="menu-toggle" id="menu-toggle">☰</button>
+            <h1 class="px-3">Learns</h1>
+        </div>
+        <div class="flex items-center p-2 bg-sky-100 rounded-full text-base" id="profile">
+            <img src="https://tse2.mm.bing.net/th?id=OIP.kFgo2lT4VSY00B0235r09wHaHa&pid=Api&P=0&h=180" width="30" height="30" class="rounded-full" alt="Profile">
+            <p class="text-slate-600 pl-2">Langit Gumilang</p>
+            <i class="fa fa-chevron-down text-slate-600 pr-2 pl-6"></i>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="classes.html">Classes</a></li>
+            <li><a href="assignment.html">Assignments</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <main class="container-fluid content">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Assignments</h1>
+                </div>
+    
+                <!-- Navigation Tabs -->
+                <div class="col-span-12 flex space-x-8 mb-4 border-b border-gray-200">
+                    <button id="btn-unfinished" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-2">Unfinished</button>
+                    <button id="btn-late" class="text-gray-600 hover:text-blue-600">Late</button>
+                    <button id="btn-finished" class="text-gray-600 hover:text-blue-600">Finished</button>
+                </div>
+    
+                <!-- Unfinished Assignments List -->
+                <div id="unfinished" class="col-span-12 lg:col-span-8 bg-white shadow rounded-lg divide-y divide-gray-200">
+                    <div class="flex items-center justify-between p-4 hover:bg-gray-50">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-white">
+                                <span>3</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">Homework</h3>
+                                <p class="text-sm text-gray-500">UI Responsive</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500">Posted Monday, October 9, 2024</p>
+                    </div>
+                </div>
+
+                <!-- Late Assignments List -->
+                <div id="late" class="col-span-12 lg:col-span-8 bg-white shadow rounded-lg divide-y divide-gray-200 hidden">
+                    <div class="flex items-center justify-between p-4 hover:bg-gray-50">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-yellow-600 w-10 h-10 rounded-full flex items-center justify-center text-white">
+                                <span>1</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">Homework</h3>
+                                <p class="text-sm text-gray-500">Sorting</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500">Posted Thursday, October 3, 2024</p>
+                    </div>
+                </div>
+
+                <!-- Finished Assignments List -->
+                <div id="finished" class="col-span-12 lg:col-span-8 bg-white shadow rounded-lg divide-y divide-gray-200 hidden">
+                    <div class="flex items-center justify-between p-4 hover:bg-gray-50">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-green-600 w-10 h-10 rounded-full flex items-center justify-center text-white">
+                                <span>2</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">Quiz</h3>
+                                <p class="text-sm text-gray-500">Array</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500">Posted Friday, October 11, 2024</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Profile Dialog -->
+    <div class="profile-dialog" id="profile-dialog">
+        <div class="profile-content">
+            <div class="justify-center">
+                <img src="https://via.placeholder.com/20" alt="Profile" class="mx-auto">
+            </div>
+            <p><strong>Langit Gumilang</strong></p>
+            <p>langitgumilang@gmail.com</p>
+            <button onclick="window.location.href = 'profile.html'">To Profile</button>
+            <button class="logout">Log Out</button>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar visibility
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Toggle profile dialog visibility
+        const profile = document.getElementById('profile');
+        const profileDialog = document.getElementById('profile-dialog');
+
+        profile.addEventListener('click', () => {
+            profileDialog.classList.toggle('active');
+        });
+
+        // Close the profile dialog if clicked outside
+        document.addEventListener('click', function(event) {
+            if (!profile.contains(event.target) && !profileDialog.contains(event.target)) {
+                profileDialog.classList.remove('active');
+            }
+        });
+
+        // Event listener for navigation buttons to switch between assignment views
+        function setupAssignmentButton(buttonId, contentId) {
+            document.getElementById(buttonId).addEventListener('click', function() {
+                // Hide all other content
+                document.getElementById('unfinished').classList.add('hidden');
+                document.getElementById('late').classList.add('hidden');
+                document.getElementById('finished').classList.add('hidden');
+
+                // Show the selected content
+                document.getElementById(contentId).classList.remove('hidden');
+
+                // Update active button styles
+                this.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+                Array.from(document.querySelectorAll('.col-span-12 > button')).forEach(btn => {
+                    if (btn.id !== buttonId) {
+                        btn.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                    }
+                });
+            });
+        }
+
+        // Setup buttons
+        setupAssignmentButton('btn-unfinished', 'unfinished');
+        setupAssignmentButton('btn-late', 'late');
+        setupAssignmentButton('btn-finished', 'finished');
+    </script>
+</body>
+
+</html>
